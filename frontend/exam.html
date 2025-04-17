@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>KL-EEE Exam Registration</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navbar with only Logout -->
+  <header class="navbar">
+    <div class="container">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- Exam Form -->
+  <div class="form-container">
+    <h2>KL-EEE Exam Registration</h2>
+    <form id="examForm">
+      <label for="studentName">Full Name</label>
+      <input type="text" id="studentName" placeholder="Enter your full name" required>
+
+      <label for="emailField">Email</label>
+      <input type="email" id="emailField" placeholder="Enter your email" required>
+
+      <label for="course">Select Course</label>
+      <select id="course" required>
+        <option value="">-- Select Course --</option>
+        <option value="B.Tech CSE">B.Tech CSE</option>
+        <option value="B.Tech ECE">B.Tech ECE</option>
+        <option value="B.Tech ME">B.Tech ME</option>
+      </select>
+
+      <button type="submit">Submit</button>
+    </form>
+    <p id="msg" class="success-message" style="display: none;">Registration Successful!</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 KL University. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function logout() {
+      window.location.href = 'index.html';
+    }
+
+    document.getElementById('examForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('studentName').value;
+      const email = document.getElementById('emailField').value;
+      const course = document.getElementById('course').value;
+
+      // Submit to local server
+      fetch('http://localhost:3000/register-exam', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentName: name, course })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.message === 'Exam registration successful') {
+          document.getElementById('msg').style.display = 'block';
+
+          // Now send confirmation email via SNS Lambda
+          fetch(`https://lpharnw9ah.execute-api.us-east-1.amazonaws.com/prod/send-confirmation?email=${email}`)
+            .then(res => res.text())
+            .then(resp => console.log("SNS Email Sent:", resp))
+            .catch(err => console.error("Error sending SNS email:", err));
+        } else {
+          alert('Registration failed. Please try again.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error occurred. Please try again later.');
+      });
+    });
+  </script>
+
+</body>
+</html>

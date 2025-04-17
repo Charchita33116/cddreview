@@ -1,0 +1,31 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Navigating to backend folder"
+      - cd backend
+      - echo "Installing backend dependencies..."
+      - npm install
+
+  pre_build:
+    commands:
+      - echo "Preparing environment"
+      - npm run lint || echo "Lint failed but continuing..."
+
+  build:
+    commands:
+      - echo "Running backend build"
+      - npm run build || { echo "Build failed"; exit 1; }
+
+  post_build:
+    commands:
+      - echo "Post-build phase"
+      - cd ../frontend
+      - echo "Syncing frontend files to S3"
+      - aws s3 sync . s3://your-bucket-name --delete  # Replace with your real bucket name
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
