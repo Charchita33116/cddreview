@@ -2,6 +2,8 @@ version: 0.2
 
 phases:
   install:
+    runtime-versions:
+      nodejs: 18  # Ensures AWS CodeBuild uses Node.js 18
     commands:
       - echo "Navigating to backend folder"
       - cd backend || { echo "Backend folder missing"; exit 1; }
@@ -27,4 +29,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  discard-paths: yes
+  name: DevOpsAppArtifacts
