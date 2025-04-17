@@ -26,7 +26,3 @@ phases:
       - cd ../frontend || { echo "Frontend folder missing"; exit 1; }
       - echo "Skipping AWS S3 sync since deployment is from Git."
 
-artifacts:
-  files:
-    - '**/*'
-  name: DevOpsAppArtifacts
