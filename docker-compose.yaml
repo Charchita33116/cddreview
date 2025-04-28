@@ -1,0 +1,16 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3000"
+    environment:
+      - DB_HOST=terraform-20250416165112674700000001.c1icc84oc7fq.us-east-1.rds.amazonaws.com
+      - DB_USER=root
+      - DB_PASSWORD=Chand1807#
+      - DB_NAME=kl_university
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
